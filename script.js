@@ -3,7 +3,7 @@ let currentCategory = 'it-shared-service';
 let currentData = [];
 let searchQuery = '';
 let currentPage = 1;
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 25;
 const API_URL_BASE = '/api/data?path=';
 
 const IT_SHARED_SERVICE_NAMES = [
@@ -60,13 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateUITitles() {
     const titleMap = {
         'it-shared-service': 'Klasemen IT Shared Service',
-        'all-participants': 'Klasemen Semua Peserta (Pria & Wanita)',
         'weekly-male': 'Klasemen Peserta Pria',
         'weekly-female': 'Klasemen Peserta Wanita'
     };
     const subtitleMap = {
         'it-shared-service': 'Peringkat internal kontribusi kalori tim IT Shared Service',
-        'all-participants': 'Peringkat gabungan seluruh karyawan pria dan wanita Kalbe',
         'weekly-male': 'Peringkat kontribusi kalori individu karyawan pria',
         'weekly-female': 'Peringkat kontribusi kalori individu karyawan wanita'
     };
@@ -89,7 +87,7 @@ async function fetchData(isSilent = false) {
 
     try {
         let data = [];
-        if (currentCategory === 'it-shared-service' || currentCategory === 'all-participants') {
+        if (currentCategory === 'it-shared-service') {
             const [resM, resF] = await Promise.all([
                 fetch(API_URL_BASE + 'leaderboard-weekly-male.php'),
                 fetch(API_URL_BASE + 'leaderboard-weekly-female.php')
@@ -223,14 +221,25 @@ function renderLeaderboard() {
         );
     }
     
-    if (filteredData.length === 0) {
+    const totalItems = filteredData.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedData = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    if (paginatedData.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-sm text-gray-500 font-medium">Tidak ada data.</td></tr>`;
+        document.getElementById('pagination-container').innerHTML = '';
         return;
     }
 
-    filteredData.forEach(row => {
-        tbody.innerHTML += createRowCard(row);
+    let htmlContent = '';
+    paginatedData.forEach(row => {
+        htmlContent += createRowCard(row);
     });
+    tbody.innerHTML = htmlContent;
+    renderPagination(totalItems, currentPage, totalPages);
 }
 
 function createRowCard(row) {
@@ -258,4 +267,55 @@ function createRowCard(row) {
         </tr>
     `;
 }
+
+function renderPagination(totalItems, current, totalPages) {
+    const container = document.getElementById('pagination-container');
+    if (!container) return;
+    
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = '<ul class="inline-flex -space-x-px text-sm bg-white border border-gray-300 rounded-md shadow-sm overflow-hidden">';
+    
+    // Previous button
+    const prevDisabled = current === 1 ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-gray-500 bg-white hover:bg-gray-50 cursor-pointer';
+    html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
+
+    // Page logic
+    let pages = [];
+    if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+        if (current <= 4) {
+            pages = [1, 2, 3, 4, 5, '...', totalPages];
+        } else if (current >= totalPages - 3) {
+            pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            pages = [1, '...', current - 1, current, current + 1, '...', totalPages];
+        }
+    }
+
+    pages.forEach(p => {
+        if (p === '...') {
+            html += `<li><span class="flex items-center justify-center px-3 py-2 text-gray-500 bg-gray-100 border-r border-gray-300 select-none">...</span></li>`;
+        } else {
+            const activeClass = p === current ? 'text-white bg-blue-500 font-semibold' : 'text-blue-500 bg-white hover:bg-gray-50 cursor-pointer';
+            html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 select-none ${activeClass}" onclick="changePage(${p})">${p}</a></li>`;
+        }
+    });
+
+    // Next button
+    const nextDisabled = current === totalPages ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-blue-500 bg-white hover:bg-gray-50 cursor-pointer';
+    html += `<li><a class="flex items-center justify-center px-3 py-2 select-none ${nextDisabled}" ${current < totalPages ? `onclick="changePage(${current + 1})"` : ''}>Next</a></li>`;
+
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+window.changePage = function(page) {
+    currentPage = page;
+    renderLeaderboard();
+};
 
