@@ -171,7 +171,7 @@ function processData(data) {
         totalCalories += parseFloat(row[4]) || 0;
     });
 
-    const totalPackages = Math.floor(totalCalories / 500);
+    const totalPackages = Math.floor(totalCalories / 10000);
     const achievementPct = Math.min((totalCalories / TARGET_CALORIES) * 100, 100).toFixed(1);
 
     const totalCaloriesEl = document.getElementById('total-calories');
