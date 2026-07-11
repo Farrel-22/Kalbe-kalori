@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial fetch
     fetchData();
 
-    // Set auto-refresh every 10 seconds for real-time updates
-    setInterval(() => fetchData(true), 10000);
+    // Set auto-refresh setiap 25 menit untuk pembaruan berkala
+    setInterval(() => fetchData(true), 1500000);
 
     // Event listener for dropdown category change
     document.getElementById('category-select').addEventListener('change', (e) => {
@@ -68,13 +68,13 @@ function updateUITitles() {
         'weekly-male': 'Peringkat kontribusi kalori individu karyawan pria',
         'weekly-female': 'Peringkat kontribusi kalori individu karyawan wanita'
     };
-    
+
     const tableTitle = document.getElementById('table-title');
     if (tableTitle) tableTitle.textContent = titleMap[currentCategory] || 'Leaderboard';
-    
+
     const tableSubtitle = document.getElementById('table-subtitle');
     if (tableSubtitle) tableSubtitle.textContent = subtitleMap[currentCategory] || '';
-    
+
     const participantLabelEl = document.getElementById('participant-label');
     if (participantLabelEl) participantLabelEl.textContent = 'Karyawan';
 }
@@ -99,19 +99,19 @@ async function fetchData(isSilent = false) {
             const dataF = jsonF.data || jsonF;
             if (dataM.length > 0 && isNaN(parseInt(dataM[0][0]))) dataM.shift();
             if (dataF.length > 0 && isNaN(parseInt(dataF[0][0]))) dataF.shift();
-            
+
             data = [...dataM, ...dataF];
         } else {
             let targetPath = '';
             if (currentCategory === 'weekly-male') targetPath = 'leaderboard-weekly-male.php';
             if (currentCategory === 'weekly-female') targetPath = 'leaderboard-weekly-female.php';
-            
+
             if (targetPath) {
                 const response = await fetch(API_URL_BASE + targetPath);
                 if (!response.ok) throw new Error('Network response was not ok');
-                
+
                 const json = await response.json();
-                data = json.data || json; 
+                data = json.data || json;
                 if (data.length > 0 && isNaN(parseInt(data[0][0]))) data.shift();
             }
         }
@@ -131,7 +131,7 @@ function formatNumber(num) {
 }
 
 function titleCase(str) {
-    return str.toLowerCase().split(' ').map(function(word) {
+    return str.toLowerCase().split(' ').map(function (word) {
         return (word.charAt(0).toUpperCase() + word.slice(1));
     }).join(' ');
 }
@@ -179,7 +179,7 @@ function processData(data) {
 
     const totalPackagesEl = document.getElementById('total-packages');
     if (totalPackagesEl) totalPackagesEl.textContent = formatNumber(totalPackages);
-    
+
     const totalParticipantsEl = document.getElementById('total-participants');
     if (totalParticipantsEl) totalParticipantsEl.textContent = formatNumber(data.length);
 
@@ -211,16 +211,16 @@ function renderLeaderboard() {
     const tbody = document.getElementById('leaderboard-tbody');
     if (!tbody) return;
     tbody.innerHTML = '';
-    
+
     // Search Filter
     let filteredData = currentData;
     if (searchQuery) {
-        filteredData = currentData.filter(row => 
+        filteredData = currentData.filter(row =>
             String(row[1]).toLowerCase().includes(searchQuery) ||
             String(row[3]).toLowerCase().includes(searchQuery)
         );
     }
-    
+
     const totalItems = filteredData.length;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
@@ -247,10 +247,10 @@ function createRowCard(row) {
     const name = row[1];
     const bu = row[3];
     const cals = formatNumber(row[4]);
-    
-    const rankColor = rank === 1 ? 'text-amber-500 font-black text-base' : 
-                      (rank === 2 ? 'text-slate-400 font-bold text-base' : 
-                      (rank === 3 ? 'text-amber-700 font-bold text-base' : 'text-gray-400 font-semibold text-sm'));
+
+    const rankColor = rank === 1 ? 'text-amber-500 font-black text-base' :
+        (rank === 2 ? 'text-slate-400 font-bold text-base' :
+            (rank === 3 ? 'text-amber-700 font-bold text-base' : 'text-gray-400 font-semibold text-sm'));
 
     return `
         <tr class="hover:bg-emerald-50/30 transition-colors group">
@@ -271,14 +271,14 @@ function createRowCard(row) {
 function renderPagination(totalItems, current, totalPages) {
     const container = document.getElementById('pagination-container');
     if (!container) return;
-    
+
     if (totalPages <= 1) {
         container.innerHTML = '';
         return;
     }
 
     let html = '<ul class="inline-flex -space-x-px text-sm bg-white border border-gray-300 rounded-md shadow-sm overflow-hidden">';
-    
+
     // Previous button
     const prevDisabled = current === 1 ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-gray-500 bg-white hover:bg-gray-50 cursor-pointer';
     html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
@@ -314,7 +314,7 @@ function renderPagination(totalItems, current, totalPages) {
     container.innerHTML = html;
 }
 
-window.changePage = function(page) {
+window.changePage = function (page) {
     currentPage = page;
     renderLeaderboard();
 };
