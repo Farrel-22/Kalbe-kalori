@@ -6,14 +6,14 @@
     --kalbe-green-dark: #1b3d26;
     --kalbe-green-tint: #d8eaa2;
     --kalbe-bg: #f6f9f0;
-    
+
     /* UI Colors */
     --text-primary: #1b3d26;
     --text-secondary: #6b7a63;
     --bg-glass: rgba(255, 255, 255, 0.7);
     --border-glass: rgba(255, 255, 255, 0.4);
     --shadow-glass: 0 8px 32px 0 rgba(27, 61, 38, 0.08);
-    
+
     /* Layout */
     --sidebar-width: 260px;
     --radius-lg: 24px;
@@ -32,14 +32,16 @@ body {
     background-color: var(--kalbe-bg);
     color: var(--text-primary);
     min-height: 100vh;
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(141, 187, 0, 0.1) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(64, 129, 0, 0.1) 0px, transparent 50%);
     background-attachment: fixed;
 }
 
 /* Base Classes */
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 .glass {
     background: var(--bg-glass);
@@ -96,7 +98,7 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     background: rgba(255, 255, 255, 0.9);
-    border-right: 1px solid rgba(0,0,0,0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
     padding: 32px 24px;
     display: flex;
     flex-direction: column;
@@ -187,7 +189,8 @@ body {
 }
 
 /* States */
-.loading-container, .error-container {
+.loading-container,
+.error-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -204,7 +207,9 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Dashboard Grid */
@@ -216,8 +221,15 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Summary Cards */
@@ -285,7 +297,8 @@ body {
     gap: 32px;
 }
 
-.chart-card, .table-card {
+.chart-card,
+.table-card {
     display: flex;
     flex-direction: column;
     padding: 24px;
@@ -324,7 +337,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--text-secondary);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .data-table td {
@@ -340,7 +353,7 @@ body {
 
 .data-table tbody tr:hover {
     transform: scale(1.01);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .data-table td:first-child {
@@ -370,10 +383,12 @@ body {
     background: #FFD700;
     color: #856404;
 }
+
 .rank-2 {
     background: #E0E0E0;
     color: #424242;
 }
+
 .rank-3 {
     background: #CD7F32;
     color: #4E342E;
@@ -390,7 +405,7 @@ body {
     .dashboard-layout {
         flex-direction: column;
     }
-    
+
     .sidebar {
         position: relative;
         width: 100%;
@@ -400,17 +415,49 @@ body {
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .sidebar-nav {
         flex-direction: row;
     }
-    
+
     .nav-item span {
         display: none;
     }
-    
+
     .main-content {
         margin-left: 0;
         padding: 20px;
     }
+}
+
+/* Elemen baris dasar */
+.baris-peserta {
+    position: relative;
+    background-color: #ffffff;
+    /* Sesuaikan dengan warna background Anda */
+    transition: all 0.3s ease-in-out;
+    /* Agar transisi efek neon halus */
+    border: 1px solid transparent;
+    /* Border default transparan agar layout tidak bergeser saat hover */
+    cursor: pointer;
+}
+
+/* Efek saat kursor menyorot baris (Hover) */
+.baris-peserta:hover {
+    /* 1. Mengubah warna border utama menjadi cerah (misal: hijau neon) */
+    border-color: #39ff14;
+
+    /* 2. Membuat efek pendaran (glow) di luar dan di dalam border */
+    box-shadow:
+        0 0 5px #39ff14,
+        /* Pendaran tipis dekat border */
+        0 0 15px #39ff14,
+        /* Pendaran luar medium */
+        0 0 25px #39ff14,
+        /* Pendaran luar luas */
+        inset 0 0 8px rgba(57, 255, 20, 0.3);
+    /* Pendaran lembut di sisi dalam */
+
+    /* Optional: Sedikit mengangkat baris untuk efek kedalaman */
+    transform: translateY(-1px);
 }
