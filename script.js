@@ -253,15 +253,15 @@ function createRowCard(row) {
             (rank === 3 ? 'text-amber-700 font-bold text-base' : 'text-gray-400 font-semibold text-sm'));
 
     return `
-        <tr class="hover:bg-emerald-50/30 transition-colors group">
-            <td class="py-4 px-5 text-center">
+        <tr class="transition-all duration-300 hover:bg-[#10B981]/15 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] group cursor-pointer">
+            <td class="py-4 px-5 text-center rounded-l-xl">
                 <span class="${rankColor}">${rank}</span>
             </td>
             <td class="py-4 px-4">
-                <div class="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">${name}</div>
-                ${bu ? `<div class="text-xs text-gray-500 mt-0.5">${bu}</div>` : ''}
+                <div class="font-bold text-gray-100 group-hover:text-emerald-400 transition-colors">${name}</div>
+                ${bu ? `<div class="text-xs text-gray-400 mt-0.5">${bu}</div>` : ''}
             </td>
-            <td class="py-4 px-5 text-right font-mono font-medium text-gray-900">
+            <td class="py-4 px-5 text-right font-mono font-medium text-gray-100 rounded-r-xl">
                 ${cals}
             </td>
         </tr>
@@ -277,11 +277,11 @@ function renderPagination(totalItems, current, totalPages) {
         return;
     }
 
-    let html = '<ul class="inline-flex -space-x-px text-sm bg-white border border-gray-300 rounded-md shadow-sm overflow-hidden">';
+    let html = '<ul class="inline-flex -space-x-px text-sm bg-[#242427] border border-[#3f3f46] rounded-md shadow-sm overflow-hidden">';
 
     // Previous button
-    const prevDisabled = current === 1 ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-gray-500 bg-white hover:bg-gray-50 cursor-pointer';
-    html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
+    const prevDisabled = current === 1 ? 'text-gray-600 bg-[#18181B] cursor-not-allowed' : 'text-gray-400 bg-[#242427] hover:bg-[#3f3f46] hover:text-gray-200 cursor-pointer';
+    html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-[#3f3f46] select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
 
     // Page logic
     let pages = [];
@@ -299,15 +299,15 @@ function renderPagination(totalItems, current, totalPages) {
 
     pages.forEach(p => {
         if (p === '...') {
-            html += `<li><span class="flex items-center justify-center px-3 py-2 text-gray-500 bg-gray-100 border-r border-gray-300 select-none">...</span></li>`;
+            html += `<li><span class="flex items-center justify-center px-3 py-2 text-gray-500 bg-[#18181B] border-r border-[#3f3f46] select-none">...</span></li>`;
         } else {
-            const activeClass = p === current ? 'text-white bg-blue-500 font-semibold' : 'text-blue-500 bg-white hover:bg-gray-50 cursor-pointer';
-            html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 select-none ${activeClass}" onclick="changePage(${p})">${p}</a></li>`;
+            const activeClass = p === current ? 'text-emerald-400 bg-[#18181B] font-semibold border-r border-[#3f3f46]' : 'text-gray-300 bg-[#242427] hover:bg-[#3f3f46] hover:text-white cursor-pointer border-r border-[#3f3f46]';
+            html += `<li><a class="flex items-center justify-center px-3 py-2 select-none ${activeClass}" onclick="changePage(${p})">${p}</a></li>`;
         }
     });
 
     // Next button
-    const nextDisabled = current === totalPages ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-blue-500 bg-white hover:bg-gray-50 cursor-pointer';
+    const nextDisabled = current === totalPages ? 'text-gray-600 bg-[#18181B] cursor-not-allowed' : 'text-gray-300 bg-[#242427] hover:bg-[#3f3f46] hover:text-white cursor-pointer';
     html += `<li><a class="flex items-center justify-center px-3 py-2 select-none ${nextDisabled}" ${current < totalPages ? `onclick="changePage(${current + 1})"` : ''}>Next</a></li>`;
 
     html += '</ul>';
