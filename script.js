@@ -249,19 +249,21 @@ function createRowCard(row) {
     const cals = formatNumber(row[4]);
 
     const rankColor = rank === 1 ? 'text-amber-500 font-black text-base' :
-        (rank === 2 ? 'text-slate-400 font-bold text-base' :
-            (rank === 3 ? 'text-amber-700 font-bold text-base' : 'text-gray-400 font-semibold text-sm'));
+        (rank === 2 ? 'text-slate-500 dark:text-slate-400 font-bold text-base' :
+            (rank === 3 ? 'text-amber-700 font-bold text-base' : 'text-gray-500 dark:text-gray-400 font-semibold text-sm'));
+
+    const tdClasses = "py-4 transition-colors duration-300 bg-white dark:bg-[#242427] border-y border-gray-200 dark:border-[#3f3f46] group-hover:bg-emerald-50 dark:group-hover:bg-[#10B981]/15 shadow-sm";
 
     return `
-        <tr class="transition-all duration-300 hover:bg-[#10B981]/15 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] group cursor-pointer">
-            <td class="py-4 px-5 text-center rounded-l-xl">
+        <tr class="group cursor-pointer">
+            <td class="${tdClasses} px-5 text-center rounded-l-xl border-l">
                 <span class="${rankColor}">${rank}</span>
             </td>
-            <td class="py-4 px-4">
-                <div class="font-bold text-gray-100 group-hover:text-emerald-400 transition-colors">${name}</div>
-                ${bu ? `<div class="text-xs text-gray-400 mt-0.5">${bu}</div>` : ''}
+            <td class="${tdClasses} px-4">
+                <div class="font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">${name}</div>
+                ${bu ? `<div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${bu}</div>` : ''}
             </td>
-            <td class="py-4 px-5 text-right font-mono font-medium text-gray-100 rounded-r-xl">
+            <td class="${tdClasses} px-5 text-right font-mono font-medium text-gray-900 dark:text-gray-100 rounded-r-xl border-r">
                 ${cals}
             </td>
         </tr>
@@ -277,11 +279,11 @@ function renderPagination(totalItems, current, totalPages) {
         return;
     }
 
-    let html = '<ul class="inline-flex -space-x-px text-sm bg-[#242427] border border-[#3f3f46] rounded-md shadow-sm overflow-hidden">';
+    let html = '<ul class="inline-flex -space-x-px text-sm bg-white dark:bg-[#242427] border border-gray-300 dark:border-[#3f3f46] rounded-md shadow-sm overflow-hidden">';
 
     // Previous button
-    const prevDisabled = current === 1 ? 'text-gray-600 bg-[#18181B] cursor-not-allowed' : 'text-gray-400 bg-[#242427] hover:bg-[#3f3f46] hover:text-gray-200 cursor-pointer';
-    html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-[#3f3f46] select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
+    const prevDisabled = current === 1 ? 'text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-[#18181B] cursor-not-allowed' : 'text-gray-500 dark:text-gray-400 bg-white dark:bg-[#242427] hover:bg-gray-50 dark:hover:bg-[#3f3f46] hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer';
+    html += `<li><a class="flex items-center justify-center px-3 py-2 border-r border-gray-300 dark:border-[#3f3f46] select-none ${prevDisabled}" ${current > 1 ? `onclick="changePage(${current - 1})"` : ''}>Previous</a></li>`;
 
     // Page logic
     let pages = [];
@@ -299,15 +301,15 @@ function renderPagination(totalItems, current, totalPages) {
 
     pages.forEach(p => {
         if (p === '...') {
-            html += `<li><span class="flex items-center justify-center px-3 py-2 text-gray-500 bg-[#18181B] border-r border-[#3f3f46] select-none">...</span></li>`;
+            html += `<li><span class="flex items-center justify-center px-3 py-2 text-gray-500 bg-gray-50 dark:bg-[#18181B] border-r border-gray-300 dark:border-[#3f3f46] select-none">...</span></li>`;
         } else {
-            const activeClass = p === current ? 'text-emerald-400 bg-[#18181B] font-semibold border-r border-[#3f3f46]' : 'text-gray-300 bg-[#242427] hover:bg-[#3f3f46] hover:text-white cursor-pointer border-r border-[#3f3f46]';
+            const activeClass = p === current ? 'text-white dark:text-emerald-400 bg-emerald-600 dark:bg-[#18181B] font-semibold border-r border-gray-300 dark:border-[#3f3f46]' : 'text-gray-500 dark:text-gray-300 bg-white dark:bg-[#242427] hover:bg-gray-50 dark:hover:bg-[#3f3f46] hover:text-gray-700 dark:hover:text-white cursor-pointer border-r border-gray-300 dark:border-[#3f3f46]';
             html += `<li><a class="flex items-center justify-center px-3 py-2 select-none ${activeClass}" onclick="changePage(${p})">${p}</a></li>`;
         }
     });
 
     // Next button
-    const nextDisabled = current === totalPages ? 'text-gray-600 bg-[#18181B] cursor-not-allowed' : 'text-gray-300 bg-[#242427] hover:bg-[#3f3f46] hover:text-white cursor-pointer';
+    const nextDisabled = current === totalPages ? 'text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-[#18181B] cursor-not-allowed' : 'text-gray-500 dark:text-gray-300 bg-white dark:bg-[#242427] hover:bg-gray-50 dark:hover:bg-[#3f3f46] hover:text-gray-700 dark:hover:text-white cursor-pointer';
     html += `<li><a class="flex items-center justify-center px-3 py-2 select-none ${nextDisabled}" ${current < totalPages ? `onclick="changePage(${current + 1})"` : ''}>Next</a></li>`;
 
     html += '</ul>';
