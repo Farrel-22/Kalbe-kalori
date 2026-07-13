@@ -21,9 +21,9 @@
             document.documentElement.classList.remove('dark')
         }
 
-        // --- TAMBAHKAN KODE PROTEKSI PASSWORD DI SINI (MULAI) ---
-        const PASSWORD_BENAR = "kalbe123";
-        const TIMEOUT_DURASI = 120 * 60 * 1000; // 120 menit
+        // --- HANYA TEMPELKAN KODE INI DI BAWAH TEMA ---
+        const PASSWORD_BENAR = "Kalbe60";
+        const TIMEOUT_DURASI = 60 * 60 * 1000; // 60 menit
 
         function cekTimeoutDitinggal() {
             const waktuSekarang = new Date().getTime();
@@ -104,49 +104,6 @@
                     }
                 }
             });
-        }
-        // --- KODE LOGIN MODAL DENGAN TOMBOL MATA & TIMEOUT (SELESAI) ---    
-        {
-            document.addEventListener("visibilitychange", function () {
-                if (document.hidden) {
-                    localStorage.setItem("waktuDitinggalkan", new Date().getTime());
-                } else {
-                    cekTimeoutDitinggal();
-                    if (sessionStorage.getItem("authenticated") !== "true") {
-                        alert("Sesi Anda telah berakhir karena Anda meninggalkan halaman ini lebih dari 120 menit.");
-                        window.location.reload();
-                    }
-                }
-            });
-        }
-
-        if (sessionStorage.getItem("authenticated") !== "true") {
-            let passwordInput = prompt("Masukkan Password untuk Mengakses Dashboard:");
-
-            if (passwordInput === PASSWORD_BENAR) {
-                // Jika benar, simpan statusnya supaya kalau di-refresh tidak minta lagi
-                sessionStorage.setItem("authenticated", "true");
-            } else {
-                alert("Password Salah! Akses ditolak.");
-                // Mengubah isi halaman menjadi teks kosong agar dashboard tidak kelihatan
-                document.write("<body style='background-color:#111827; color:white; font-family:sans-serif; text-align:center; padding-top:100px;'><h1>Akses Ditolak. Silakan refresh halaman untuk mencoba lagi.</h1></body>");
-                window.stop();
-            }
-        }
-        // --- TAMBAHKAN KODE PROTEKSI PASSWORD DI SINI (SELESAI) ---
-    </script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {}
-            }
-        }
-        // Theme initialization
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark')
         }
     </script>
     <style>
