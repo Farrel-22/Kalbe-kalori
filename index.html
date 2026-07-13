@@ -1,6 +1,127 @@
 <!DOCTYPE html>
 <html lang="id">
 
+const { state } = WH.createApp({
+title: "Kalbe Donor Kalori Dashboard",
+params: {
+divisionFilter: {
+type: "select",
+value: "All Entities",
+options: ["All Entities", "Top 3 Pharma", "My Division"],
+label: "Division Filter"
+},
+personalInput: {
+type: "number",
+value: 750,
+min: 0,
+max: 10000,
+label: "Daily Kcal Input"
+},
+accessPassword: {
+type: "text",
+value: "",
+label: "Password Akses 🔒"
+}
+},
+internal_state: {
+leaderboardData: RAW_LEADERBOARD,
+targetGoal: TARGET_GOAL,
+collected: CURRENT_COLLECTED,
+conversionRate: CONVERSION_RATE,
+personalPackages: 1.5,
+isLocked: true
+},
+sizing: {
+viz: { height: 750 }
+},
+editorial: {
+hud: [
+{ label: "Total Kcal Burned", value: "3,450,200" },
+{ label: "Nutrition Packages", value: "6,900" },
+{ label: "Active Employees", value: "4,600" }
+]
+}
+});
+
+const [vTop, vBottom] = ui.buildStack([
+{ id: 'viz-progress', height: 220 },
+{ id: 'viz-leaderboard', height: 320 }
+]);
+<!-- ... existing code ... -->
+// Leaderboard Table
+WH.initTable(vBottom, ({ state }) => {
+if (state.isLocked) {
+return {
+data: [
+{ rank: "?", entity: "🔒 Leaderboard Terkunci. Masukkan password pada panel kontrol untuk membuka." }
+],
+columns: [
+{ key: 'rank', label: 'Rank' },
+{ key: 'entity', label: 'Corporate Entity' }
+]
+};
+}
+
+const filtered = state.leaderboardData.filter(d => {
+if (state.divisionFilter === "Top 3 Pharma") return d.type === 'pharma' && d.rank <= 4; if
+    (state.divisionFilter==="My Division" ) return d.entity==="Kalbe Farma HQ" ; return true; }); return { data:
+    filtered, columns: [ { key: 'rank' , label: 'Rank' , format: v=> `#${v}` },
+    { key: 'entity', label: 'Corporate Entity' },
+    { key: 'kcal', label: 'Contributed Calories', format: v => v.toLocaleString() + " kcal" }
+    ],
+    highlightCondition: (row) => row.entity === "Kalbe Farma HQ" ? 'success' : null
+    };
+    });
+
+    // Logic & Reactivity
+    const updateImpact = () => {
+    const packages = state.personalInput / state.conversionRate;
+    state.personalPackages = packages;
+
+    ui.setEditorial({
+    hud: [
+    { label: "Total Kcal Burned", value: state.collected.toLocaleString() },
+    { label: "Nutrition Packages", value: (state.collected / state.conversionRate).toLocaleString() },
+    { label: "Active Employees", value: "4,600" },
+    { label: "Your Impact", value: `${packages.toFixed(2)} Pkgs` }
+    ],
+    details: `### Hitung Dampak Kalorimu\n\nBerdasarkan input aktivitas harian Anda sebesar **${state.personalInput}
+    kcal**, Anda telah membantu Kalbe mendonasikan **${packages.toFixed(2)} paket nutrisi** untuk anak-anak yang
+    membutuhkan. \n\nTerus bergerak untuk hidup yang lebih sehat dan dampak sosial yang lebih besar!`
+    });
+    };
+
+    state._subscribe('accessPassword', (val) => {
+    if (val === "KALBE2026") {
+    state.isLocked = false;
+    ui.setInspector({
+    title: "Akses Berhasil",
+    value: "Terbuka",
+    text: "Password benar"
+    });
+    } else if (val !== "") {
+    state.isLocked = true;
+    ui.setInspector({
+    title: "Akses Ditolak",
+    value: "Salah",
+    text: "Password salah"
+    });
+    }
+    });
+
+    state._subscribe('personalInput', updateImpact);
+    state._subscribe('divisionFilter', () => {
+    // Table updates automatically via reactive state.leaderboardData and divisionFilter
+    });
+
+    // Initial Boot
+    updateImpact();
+    </script>
+
+    </body>
+
+</html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
